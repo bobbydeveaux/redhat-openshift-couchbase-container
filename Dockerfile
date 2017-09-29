@@ -1,11 +1,9 @@
-# This is a RHEL 7 image from Redhat
-FROM registry.access.redhat.com/rhel7
+# Modified fork from RHEL7 file
+# Original at https://github.com/couchbase-partners/
+# redhat-openshift-couchbase-container
+FROM centos:latest
 
-MAINTAINER Couchbase Docker Team <docker@couchbase.com>
-
-
-RUN yum-config-manager --enable rhel-7-server-optional-rpms \
-    rhel-7-server-extras-rpms rhel-server-rhscl-7-rpms
+MAINTAINER Bobby DeVeaux <me@bobbybjason.co.uk>
 
 # Install yum dependencies
 RUN yum install -y tar \
@@ -51,10 +49,12 @@ RUN ln -s dummy.sh /usr/local/bin/iptables-save && \
     ln -s dummy.sh /usr/local/bin/vgdisplay && \
     ln -s dummy.sh /usr/local/bin/pvdisplay
 
+
+
 # Clean the cache
 RUN yum clean all
 
-LABEL name="rhel7/couchbase-server"
+LABEL name="centos7/couchbase-server"
 LABEL vendor="Couchbase"
 LABEL version="5.0.0"
 LABEL release="Latest"
@@ -64,7 +64,14 @@ LABEL architecture="x86_64"
 LABEL run="docker run -d --privileged -p 8091:8091 --restart always \
     --name NAME IMAGE"
 
+
+# thanks to https://github.com/voanhduy1512/couchbase/commit/3197ed91bdaa56c843be4e650bf968324ddbe522
+# OPENSHIFT
+RUN chgrp -R 0 /opt/couchbase && chmod -R g+rwX /opt/couchbase
+
+COPY scripts/configure-node.sh /
 COPY scripts/entrypoint.sh /
+
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["couchbase-server"]
 
