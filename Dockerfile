@@ -72,8 +72,7 @@ RUN chgrp -R 0 /opt/couchbase && chmod -R g+rwX /opt/couchbase
 COPY scripts/configure-node.sh /
 COPY scripts/entrypoint.sh /
 
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["couchbase-server"]
+CMD ["/configure-node.sh"]
 
 EXPOSE 8091 8092 8093 8094 11207 11210 11211 18091 18092 18093
 VOLUME /opt/couchbase/var

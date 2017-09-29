@@ -1,3 +1,15 @@
+#!/bin/bash
+
+set -x
+set -m
+
+
+/entrypoint.sh couchbase-server &
+
+echo "Sleeping 15..."
+sleep 15
+echo "Waking up!"
+
 # Thanks to https://github.com/arun-gupta/docker-images/blob/master/couchbase/configure-node.sh
 # Setup index and memory quota
 curl -v -X POST http://127.0.0.1:8091/pools/default -d memoryQuota=300 -d indexMemoryQuota=300
